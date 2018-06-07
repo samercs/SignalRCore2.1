@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "inputFiles": [
+      "node_modules/@aspnet/signalr/dist/browser/signalr.js"
+    ],
+    "outputFileName": "wwwroot/lib/signalr/signalr.js"
+  }
+]

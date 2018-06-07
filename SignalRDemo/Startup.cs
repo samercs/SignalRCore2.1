@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using SignalRDemo.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SignalRDemo.Hub;
 
 namespace SignalRDemo
 {
@@ -34,14 +35,25 @@ namespace SignalRDemo
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<IdentityOptions>(i =>
+            {
+                i.Password.RequireDigit = false;
+                i.Password.RequireLowercase = false;
+                i.Password.RequireNonAlphanumeric = false;
+                i.Password.RequireUppercase = false;
+                i.Password.RequiredUniqueChars = 0;
+                i.Password.RequiredLength = 6;
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +77,10 @@ namespace SignalRDemo
             app.UseAuthentication();
 
             app.UseMvc();
+            app.UseSignalR(route =>
+            {
+                route.MapHub<ChatHub>("/hubs/chat");
+            });
         }
     }
 }
